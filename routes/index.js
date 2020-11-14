@@ -102,13 +102,14 @@ router.get("/find_user", (req, res) => {
 
 router.get("/users/", async (req, res) => {
     let id = req.query.id
+    res.writeHeader(200, { "Content-Type": "text/html" })
     await PersonModel.find({ name: id }, (err, data) => {
         if (data.length === 0) {
             res.write("not found! the user")
         } else {
             data.forEach((d) => {
                 const { name, age } = d
-                res.write(`name : ${name} age: ${age}\n`)
+                res.write(`<h2>name : ${name} age: ${age}\n</h2>`)
             })
         }
         if (err !== null) {
