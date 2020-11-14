@@ -51,12 +51,12 @@ router.get("/get_users", async (req, res) => {
 router.get("/delete_user", (req, res) => {
     res.sendFile("deleteUser.html", { root: "." })
 })
-router.post("/delete_user", (req, res) => {
+router.post("/delete_user", async (req, res) => {
     const id = req.body.id
 
     res.writeHeader(200, { "Content-Type": "text/html" })
 
-    PersonModel.deleteMany({ _id: id })
+    await PersonModel.deleteMany({ _id: id })
         .then(() => {
             res.write("user deleted<br>")
             res.write(`<a href="/"><button>Home</button></a><br>`)
@@ -74,7 +74,6 @@ router.get("/update_user", (req, res) => {
     res.sendFile("updateUser.html", { root: "." })
 })
 router.post("/update_user", async (req, res) => {
-
     const { id, name, age } = req.body
     res.writeHeader(200, { "Content-Type": "text/html" })
     await PersonModel.findByIdAndUpdate(
@@ -86,7 +85,9 @@ router.post("/update_user", async (req, res) => {
                 res.write("cant update! plz check and try again")
                 res.write(`<a href="/"><button>Home</button></a><br>`)
             } else {
-                res.write(`updated! <br> Before name: ${doc.name} age: ${doc.age} <br>`)
+                res.write(
+                    `updated! <br> Before name: ${doc.name} age: ${doc.age} <br>`
+                )
                 res.write(`After name: ${name} age: ${age}<br>`)
                 res.write(`<a href="/"><button>Home</button></a><br>`)
             }
