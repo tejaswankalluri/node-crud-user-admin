@@ -1,7 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const mongoose = require("mongoose")
-
+const publicPath = {
+    root : "./public"
+}
 // schema
 const PersonSchema = new mongoose.Schema({
     name: String,
@@ -12,11 +14,11 @@ const PersonModel = mongoose.model("users", PersonSchema)
 // routes
 
 router.get("/", (req, res) => {
-    res.sendFile("index.html", { root: "." })
+    res.sendFile("index.html", publicPath)
 })
 // add user
 router.get("/add_user", (req, res) => {
-    res.sendFile("adduser.html", { root: "." })
+    res.sendFile("adduser.html", publicPath)
 })
 
 router.post("/add_user", async (req, res) => {
@@ -34,22 +36,18 @@ router.post("/add_user", async (req, res) => {
     res.write(`<a href="/"><button>Home</button></a><br>`)
     res.send()
 })
-// get user
+// show user
 router.get("/get_users", async (req, res) => {
     const User = await PersonModel.find({})
-    res.writeHeader(200, { "Content-Type": "text/html" })
-    User.forEach((data) => {
-        const { name, age, _id } = data
-        res.write(`<br>Name: ${name} Age: ${age} Id: ${_id}<br>`)
+    
+    res.render("showuser",{
+        users : User
     })
-    res.write(`<a href="/"><button>Home</button></a><br>`)
-
-    res.send()
 })
 
 // delete user
 router.get("/delete_user", (req, res) => {
-    res.sendFile("deleteUser.html", { root: "." })
+    res.sendFile("deleteUser.html", publicPath)
 })
 router.post("/delete_user", async (req, res) => {
     const id = req.body.id
@@ -71,7 +69,7 @@ router.post("/delete_user", async (req, res) => {
 })
 // update user
 router.get("/update_user", (req, res) => {
-    res.sendFile("updateUser.html", { root: "." })
+    res.sendFile("updateUser.html", publicPath)
 })
 router.post("/update_user", async (req, res) => {
     const { id, name, age } = req.body
@@ -97,7 +95,7 @@ router.post("/update_user", async (req, res) => {
 })
 // Find user
 router.get("/find_user", (req, res) => {
-    res.sendFile("findUser.html", { root: "." })
+    res.sendFile("findUser.html", publicPath)
 })
 
 router.get("/users/", async (req, res) => {
